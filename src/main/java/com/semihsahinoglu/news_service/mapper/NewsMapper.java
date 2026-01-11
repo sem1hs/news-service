@@ -61,6 +61,7 @@ public class NewsMapper {
         newsRequest.tags().ifPresent(news::setTags);
         newsRequest.imageUrl().ifPresent(news::setImageUrl);
         newsRequest.views().ifPresent(news::setViews);
-
+        newsRequest.leagueId().ifPresent(news::setLeagueId);
+        newsRequest.teamId().ifPresent(news::setTeamId);
     }
 }

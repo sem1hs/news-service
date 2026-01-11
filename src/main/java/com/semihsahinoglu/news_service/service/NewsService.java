@@ -50,7 +50,17 @@ public class NewsService {
 
     public NewsResponse update(Long newsId, UpdateNewsRequest newsRequest) {
         News news = newsRepository.findById(newsId).orElseThrow(() -> new NewsNotFoundException("Haber bulunamadı !"));
+
+        Long oldLeagueId = news.getLeagueId();
+        Long oldTeamId = news.getTeamId();
+
         newsMapper.updateEntity(news, newsRequest);
+
+        boolean leagueChanged = newsRequest.leagueId().isPresent() && !newsRequest.leagueId().get().equals(oldLeagueId);
+        boolean teamChanged = newsRequest.teamId().isPresent() && !newsRequest.teamId().get().equals(oldTeamId);
+
+        if (leagueChanged || teamChanged) enrichWithLeagueAndTeam(news);
+
         News updatedNews = newsRepository.save(news);
         return newsMapper.toDto(updatedNews);
     }
